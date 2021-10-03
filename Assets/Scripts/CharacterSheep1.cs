@@ -33,27 +33,8 @@ public class CharacterSheep1 : MonoBehaviour
     void Update()
     {
         
-        if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            Vector3 position = this.transform.position;
-            position.x += this.walkingSpeed;
-            this.transform.position = position;
-        }
-
-        if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            Vector3 position = this.transform.position;
-            position.x -= this.walkingSpeed;
-            this.transform.position = position;
-        }
-
-        if((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space)
-            || Input.GetKey(KeyCode.UpArrow)) && this.numberJump > 0)
-        {
-            this.numberJump--;
-            Vector2 jumpStrength = new Vector2(0f, this.forceJump);
-            this.GetComponent<Rigidbody2D>().AddForce(jumpStrength, ForceMode2D.Impulse);
-        }
+        walk();
+        jump();
        
     }
 
@@ -63,6 +44,7 @@ public class CharacterSheep1 : MonoBehaviour
         if(collision2D.collider.CompareTag("collisionFloor"))
         {
             this.numberJump = MAX_JUMP;
+            this.GetComponent<Animator>().SetBool("isJumping", false);
         }
     }
 
@@ -96,5 +78,43 @@ public class CharacterSheep1 : MonoBehaviour
         textKeyScore.GetComponent<Text>().text = numberKeysCollected.ToString();
     }
 
+    void walk()
+    {
+        
+        if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            Vector3 position = this.transform.position;
+            position.x += this.walkingSpeed;
+            this.transform.position = position;
 
+            this.GetComponent<Animator>().SetBool("isRunning", true);
+            this.GetComponent<SpriteRenderer>().flipX = false;
+        } 
+        else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            Vector3 position = this.transform.position;
+            position.x -= this.walkingSpeed;
+            this.transform.position = position;
+
+            this.GetComponent<SpriteRenderer>().flipX = true;
+            this.GetComponent<Animator>().SetBool("isRunning", true);
+        }
+        else
+        {
+            this.GetComponent<Animator>().SetBool("isRunning", false);
+        }
+    }
+
+    void jump()
+    {
+        if((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space)
+            || Input.GetKey(KeyCode.UpArrow)) && this.numberJump > 0)
+        {
+            this.numberJump--;
+            Vector2 jumpStrength = new Vector2(0f, this.forceJump);
+            this.GetComponent<Rigidbody2D>().AddForce(jumpStrength, ForceMode2D.Impulse);
+
+            this.GetComponent<Animator>().SetBool("isJumping", true);
+        }
+    }
 }
