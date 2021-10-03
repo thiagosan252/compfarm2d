@@ -117,4 +117,5 @@ public class CharacterSheep1 : MonoBehaviour
             this.GetComponent<Animator>().SetBool("isJumping", true);
         }
     }
+
 }
