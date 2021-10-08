@@ -21,11 +21,17 @@ public class CharacterSheep1 : MonoBehaviour
     public AudioClip coinCollected;
     public AudioClip keyCollected;
 
+    public Vector3 startPosition;
+
+    private bool isDead;
+
     void Start()
     {
         this.numberJump = MAX_JUMP;
         this.numberCoinsCollected = 0;
         this.numberKeysCollected = 0;
+        this.startPosition = this.transform.position;
+        this.isDead = false;
         updateCoinScore();
         updateKeyScore();
     }
@@ -35,6 +41,7 @@ public class CharacterSheep1 : MonoBehaviour
         
         walk();
         jump();
+        dead();
        
     }
 
@@ -46,6 +53,9 @@ public class CharacterSheep1 : MonoBehaviour
             this.numberJump = MAX_JUMP;
             this.GetComponent<Animator>().SetBool("isJumping", false);
         }
+
+        if(collision2D.collider.CompareTag("villian")) this.isDead = true;
+
     }
 
     void OnTriggerEnter2D(Collider2D collider2D)
@@ -66,6 +76,14 @@ public class CharacterSheep1 : MonoBehaviour
             updateKeyScore();
             this.GetComponent<AudioSource>().PlayOneShot(keyCollected);
         } 
+
+
+        if(collider2D.CompareTag("win") && numberKeysCollected == 1) 
+        {
+            Destroy(collider2D.gameObject);
+            this.isDead = true;
+            dead();
+        }
     }
 
     void updateCoinScore()
@@ -115,6 +133,19 @@ public class CharacterSheep1 : MonoBehaviour
             this.GetComponent<Rigidbody2D>().AddForce(jumpStrength, ForceMode2D.Impulse);
 
             this.GetComponent<Animator>().SetBool("isJumping", true);
+        }
+    }
+
+    void dead()
+    {
+        Vector3 currentPosition = this.transform.position;
+
+        if(currentPosition.y < -10f) this.isDead = true;
+        
+        if(this.isDead)
+        {
+            this.transform.position = this.startPosition;
+            this.isDead = false;
         }
     }
 

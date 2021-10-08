@@ -7,6 +7,8 @@ TagManager:
   - collisionFloor
   - colliderCoin
   - colliderKey
+  - villian
+  - win
   layers:
   - Default
   - TransparentFX
